@@ -7,6 +7,12 @@ import schedule
 from .models import ForecastInCity
 from .service import forecast_for_city
 
+def shedul_task(func):
+    schedule.every(1).hour.do(func)
+
+t = threading.Thread(target=shedul_task, args=(forecast_for_city,))
+t.setDaemon(True)
+t.start()
 
 
 class WeatherStat(views.View):
