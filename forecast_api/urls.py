@@ -1,4 +1,5 @@
 from django.urls import path
+
 from forecast_api.views import ForecastDetail
 
 urlpatterns = [

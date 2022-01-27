@@ -12,6 +12,20 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+env.read_env('.env')
+
+OPENWEATHER_KEY = env('OPENWEATHER_KEY')
+
+URL_BASE = env('URL_WEATHER')
+
+URL_FORECAST = env('URL_FORECAST')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

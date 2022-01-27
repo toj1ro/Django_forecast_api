@@ -1,14 +1,12 @@
 from django.db import models
 
 
-
 class ForecastInCity(models.Model):
     """
     Represents the weather forecast associated to the cities
     """
     city_name = models.CharField(max_length=100)
     datetime = models.DateTimeField(auto_now_add=True)
-
     # temperatures saved with Unit as Celsius
     temperature = models.FloatField()
     max_temperature = models.FloatField(null=True)

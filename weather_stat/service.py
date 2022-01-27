@@ -1,44 +1,22 @@
-import environ
-from requests import request
-from .models import ForecastInCity
-
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-
-env.read_env('.env')
-
-OPENWEATHER_KEY = env('OPENWEATHER_KEY')
-
-URL_BASE = env('URL_WEATHER')
-
-CITIES = []
-
-with open("CITIES.txt") as countries:
-    for country in countries:
-        CITIES.append(country[:-1])
+import csv
+from django.http import HttpResponse
 
 
-def saving_in_db(forecast_json: dict) -> None:
-    if forecast_json['cod'] == 200:
-        new_db_record = ForecastInCity(city_name=forecast_json['name'],
-                                       temperature=forecast_json['main']['temp'],
-                                       max_temperature=forecast_json['main']['temp_max'],
-                                       min_temperature=forecast_json['main']['temp_min'],
-                                       pressure=forecast_json['main']['pressure'],
-                                       humidity=forecast_json['main']['humidity'],
-                                       cloudiness=forecast_json['clouds']['all'],
-                                       description=forecast_json['weather'][0]['description'],
-                                       wind_speed=forecast_json['wind']['speed'],
-                                       wind_degrees=forecast_json['wind']['deg']
-                                       )
+def csv_writer(query_set):
+    response = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': "attachment; filename=weather_in_cities.csv"},
+    )
 
-        new_db_record.save()
-    else:
-        print(forecast_json)
+    writer = csv.writer(response)
+    writer.writerow(
+        ['City', 'DateTime', 'Temperature', 'Max temperature', 'Min temperature', 'Pressure', 'Humidity',
+         'Cloudiness', 'Description', 'Wind speed', 'Wind degrees'])
 
+    for record in query_set:
+        writer.writerow(
+            [record.city_name, record.datetime, record.temperature, record.max_temperature, record.min_temperature,
+             record.pressure, record.humidity, record.cloudiness, record.description, record.wind_speed,
+             record.wind_degrees])
 
-def forecast_for_city() -> None:
-    for city in CITIES:
-        forecast_json = request(url=URL_BASE.format(city, OPENWEATHER_KEY), method='get').json()
-        saving_in_db(forecast_json)
+    return response
