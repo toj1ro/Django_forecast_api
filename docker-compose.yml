@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  cache:
+    image: redis:latest
+    restart: always
+  web:
+    build: .
+    command: python /usr/src/forecast_api/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/forecast_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - cache
