@@ -1,6 +1,6 @@
 # Django_forecast_api
 
-Чтобы развернуть проект в дериктории с файлом manage.py введите команды:\
+Чтобы развернуть проект в директории с файлом manage.py введите команды:\
 `$sudo docker-compose build`\
 `$sudo docker-compose up`
 
